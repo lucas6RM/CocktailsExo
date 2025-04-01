@@ -1,24 +1,18 @@
 package com.mercierlucas.cocktailsexo.ui.details
 
-import android.opengl.Visibility
 import androidx.fragment.app.viewModels
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.RemoteViews.DrawInstructions
-import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.mercierlucas.cocktailsexo.R
-import com.mercierlucas.cocktailsexo.databinding.FragmentCreateDrinkBinding
 import com.mercierlucas.cocktailsexo.databinding.FragmentDetailsDrinkBinding
-import com.mercierlucas.cocktailsexo.ui.main.MainFragmentDirections
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -82,7 +76,7 @@ class DetailsDrinkFragment : Fragment() {
 
             if(!isMine){
                 btnGoEditCocktail.visibility = GONE
-                detailsDrinkViewModel.getDrinkRemoteById(idDrink)
+                detailsDrinkViewModel.getDrinkRemoteById(idDrink.toLong())
             }
             else{
                 detailsDrinkViewModel.getDrinkRoomById(idDrink.toLong())

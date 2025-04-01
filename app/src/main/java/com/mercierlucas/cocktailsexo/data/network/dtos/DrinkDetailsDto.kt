@@ -1,109 +1,202 @@
 package com.mercierlucas.cocktailsexo.data.network.dtos
 
 
+import android.util.Log
 import com.squareup.moshi.Json
+import kotlin.reflect.full.memberProperties
+
 
 data class DrinkDetailsDto(
     @Json(name = "dateModified")
-    val dateModified: String,
+    val dateModified: String?,
     @Json(name = "idDrink")
-    val idDrink: String,
+    val idDrink: String?,
     @Json(name = "strAlcoholic")
-    val strAlcoholic: String,
+    val strAlcoholic: String?,
     @Json(name = "strCategory")
-    val strCategory: String,
+    val strCategory: String?,
     @Json(name = "strCreativeCommonsConfirmed")
-    val strCreativeCommonsConfirmed: String,
+    val strCreativeCommonsConfirmed: String?,
     @Json(name = "strDrink")
-    val strDrink: String,
+    val strDrink: String?,
     @Json(name = "strDrinkAlternate")
-    val strDrinkAlternate: Any,
+    val strDrinkAlternate: String?,
     @Json(name = "strDrinkThumb")
-    val strDrinkThumb: String,
+    val strDrinkThumb: String?,
     @Json(name = "strGlass")
-    val strGlass: String,
+    val strGlass: String?,
     @Json(name = "strIBA")
-    val strIBA: Any,
+    val strIBA: String?,
     @Json(name = "strImageAttribution")
-    val strImageAttribution: Any,
+    val strImageAttribution: String?,
     @Json(name = "strImageSource")
-    val strImageSource: Any,
+    val strImageSource: String?,
     @Json(name = "strIngredient1")
-    val strIngredient1: String,
+    val strIngredient1: String?,
     @Json(name = "strIngredient10")
-    val strIngredient10: Any,
+    val strIngredient10: String?,
     @Json(name = "strIngredient11")
-    val strIngredient11: Any,
+    val strIngredient11: String?,
     @Json(name = "strIngredient12")
-    val strIngredient12: Any,
+    val strIngredient12: String?,
     @Json(name = "strIngredient13")
-    val strIngredient13: Any,
+    val strIngredient13: String?,
     @Json(name = "strIngredient14")
-    val strIngredient14: Any,
+    val strIngredient14: String?,
     @Json(name = "strIngredient15")
-    val strIngredient15: Any,
+    val strIngredient15: String?,
     @Json(name = "strIngredient2")
-    val strIngredient2: String,
+    val strIngredient2: String?,
     @Json(name = "strIngredient3")
-    val strIngredient3: String,
+    val strIngredient3: String?,
     @Json(name = "strIngredient4")
-    val strIngredient4: String,
+    val strIngredient4: String?,
     @Json(name = "strIngredient5")
-    val strIngredient5: String,
+    val strIngredient5: String?,
     @Json(name = "strIngredient6")
-    val strIngredient6: Any,
+    val strIngredient6: String?,
     @Json(name = "strIngredient7")
-    val strIngredient7: Any,
+    val strIngredient7: String?,
     @Json(name = "strIngredient8")
-    val strIngredient8: Any,
+    val strIngredient8: String?,
     @Json(name = "strIngredient9")
-    val strIngredient9: Any,
+    val strIngredient9: String?,
     @Json(name = "strInstructions")
-    val strInstructions: String,
+    val strInstructions: String?,
     @Json(name = "strInstructionsDE")
-    val strInstructionsDE: String,
+    val strInstructionsDE: String?,
     @Json(name = "strInstructionsES")
-    val strInstructionsES: String,
+    val strInstructionsES: String?,
     @Json(name = "strInstructionsFR")
-    val strInstructionsFR: String,
+    val strInstructionsFR: String?,
     @Json(name = "strInstructionsIT")
-    val strInstructionsIT: String,
+    val strInstructionsIT: String?,
     @Json(name = "strInstructionsZH-HANS")
-    val strInstructionsZHHANS: Any,
+    val strInstructionsZHHANS: String?,
     @Json(name = "strInstructionsZH-HANT")
-    val strInstructionsZHHANT: Any,
+    val strInstructionsZHHANT: String?,
     @Json(name = "strMeasure1")
-    val strMeasure1: String,
+    val strMeasure1: String?,
     @Json(name = "strMeasure10")
-    val strMeasure10: Any,
+    val strMeasure10: String?,
     @Json(name = "strMeasure11")
-    val strMeasure11: Any,
+    val strMeasure11: String?,
     @Json(name = "strMeasure12")
-    val strMeasure12: Any,
+    val strMeasure12: String?,
     @Json(name = "strMeasure13")
-    val strMeasure13: Any,
+    val strMeasure13: String?,
     @Json(name = "strMeasure14")
-    val strMeasure14: Any,
+    val strMeasure14: String?,
     @Json(name = "strMeasure15")
-    val strMeasure15: Any,
+    val strMeasure15: String?,
     @Json(name = "strMeasure2")
-    val strMeasure2: String,
+    val strMeasure2: String?,
     @Json(name = "strMeasure3")
-    val strMeasure3: String,
+    val strMeasure3: String?,
     @Json(name = "strMeasure4")
-    val strMeasure4: String,
+    val strMeasure4: String?,
     @Json(name = "strMeasure5")
-    val strMeasure5: String,
+    val strMeasure5: String?,
     @Json(name = "strMeasure6")
-    val strMeasure6: Any,
+    val strMeasure6: String?,
     @Json(name = "strMeasure7")
-    val strMeasure7: Any,
+    val strMeasure7: String?,
     @Json(name = "strMeasure8")
-    val strMeasure8: Any,
+    val strMeasure8: String?,
     @Json(name = "strMeasure9")
-    val strMeasure9: Any,
+    val strMeasure9: String?,
     @Json(name = "strTags")
-    val strTags: Any,
+    val strTags: String?,
     @Json(name = "strVideo")
-    val strVideo: Any
-)
+    val strVideo: String?,
+){
+    val ingredients :String
+        get() {
+            val pairs = listOf(
+                strIngredient1 to strMeasure1,
+                strIngredient2 to strMeasure2,
+                strIngredient3 to strMeasure3,
+                strIngredient4 to strMeasure4,
+                strIngredient5 to strMeasure5,
+                strIngredient6 to strMeasure6,
+                strIngredient7 to strMeasure7,
+                strIngredient8 to strMeasure8,
+                strIngredient9 to strMeasure9,
+                strIngredient10 to strMeasure10,
+                strIngredient11 to strMeasure11,
+                strIngredient12 to strMeasure12,
+                strIngredient13 to strMeasure13,
+                strIngredient14 to strMeasure14,
+                strIngredient15 to strMeasure15
+            )
+
+            var strConcat = ""
+            pairs.forEach { (ingredient, measure) ->
+                if (!ingredient.isNullOrBlank()) {
+                    strConcat += "$ingredient (${measure ?: ""})\n"
+                }
+            }
+
+            return strConcat
+
+            /*----- Reflection -----
+
+            var strConcat = ""
+
+            for (i in 1..15){
+                val ingredient = this::class.members
+                    .firstOrNull { it.name == "strIngredient$i" }
+                    ?.call(this) as? String
+
+                val measure = this::class.members
+                    .firstOrNull { it.name == "strMeasure$i" }
+                    ?.call(this) as? String
+
+                if (!ingredient.isNullOrBlank()) {
+                    strConcat += "$ingredient (${measure ?: ""})\n"
+                }
+            }
+
+            return strConcat
+
+             */
+
+            /* ------ brute force ------
+            var strConcat = ""
+
+            strConcat += "${strIngredient1 ?: ""} (${strMeasure1 ?: ""})" +
+            if(strIngredient1 != null) "\n" else ""
+            strConcat += "${strIngredient2 ?: ""} (${strMeasure2 ?: ""})" +
+                    if(strIngredient2 != null) "\n" else ""
+            strConcat += "${strIngredient3 ?: ""} (${strMeasure3 ?: ""})" +
+                    if(strIngredient3 != null) "\n" else ""
+            strConcat += "${strIngredient4 ?: ""} (${strMeasure4 ?: ""})" +
+                    if(strIngredient4 != null) "\n" else ""
+            strConcat += "${strIngredient5 ?: ""} (${strMeasure5 ?: ""})" +
+                    if(strIngredient5 != null) "\n" else ""
+            strConcat += "${strIngredient6 ?: ""} (${strMeasure6 ?: ""})" +
+                    if(strIngredient6 != null) "\n" else ""
+            strConcat += "${strIngredient7 ?: ""} (${strMeasure7 ?: ""})" +
+                    if(strIngredient7 != null) "\n" else ""
+            strConcat += "${strIngredient8 ?: ""} (${strMeasure8 ?: ""})" +
+                    if(strIngredient8 != null) "\n" else ""
+            strConcat += "${strIngredient9 ?: ""} (${strMeasure9 ?: ""})" +
+                    if(strIngredient9 != null) "\n" else ""
+            strConcat += "${strIngredient10 ?: ""} (${strMeasure10 ?: ""})" +
+                    if(strIngredient10 != null) "\n" else ""
+            strConcat += "${strIngredient11 ?: ""} (${strMeasure11 ?: ""})" +
+                    if(strIngredient11 != null) "\n" else ""
+            strConcat += "${strIngredient12 ?: ""} (${strMeasure12 ?: ""})" +
+                    if(strIngredient12 != null) "\n" else ""
+            strConcat += "${strIngredient13 ?: ""} (${strMeasure13 ?: ""})" +
+                    if(strIngredient13 != null) "\n" else ""
+            strConcat += "${strIngredient14 ?: ""} (${strMeasure14 ?: ""})" +
+                    if(strIngredient14 != null) "\n" else ""
+            strConcat += "${strIngredient15 ?: ""} (${strMeasure15 ?: ""})" +
+                    if(strIngredient15 != null) "\n" else ""
+
+            return strConcat.replace("()","")
+            */
+
+        }
+}

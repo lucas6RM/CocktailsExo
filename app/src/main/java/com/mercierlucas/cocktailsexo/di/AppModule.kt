@@ -1,5 +1,7 @@
-package com.mercierlucas.cocktailsexo.data.network.api
+package com.mercierlucas.cocktailsexo.di
 
+import com.mercierlucas.cocktailsexo.data.network.api.ApiRoutes
+import com.mercierlucas.cocktailsexo.data.network.api.ApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module

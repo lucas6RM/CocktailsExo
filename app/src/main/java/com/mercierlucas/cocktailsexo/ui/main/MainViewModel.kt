@@ -40,55 +40,16 @@ class MainViewModel @Inject constructor(
         getAllDrinksDetailedRoom()
         getRemoteDrinks()
 
-        /*
-        deletedByIdDrinkDetailedRoom(4)
-
-        deletedByIdDrinkDetailedRoom(5)
-
-        deletedByIdDrinkDetailedRoom(6)
-
-
-
-*/
-        /*
-
-        insertDrinkDetailedRoom(
-            DrinkDetailsRoom(
-            0,
-            "pastis",
-            "urlimage1",
-            "2cl de jaune + eau",
-            "d'abord jaune"
-            )
-        )
-        insertDrinkDetailedRoom(DrinkDetailsRoom(
-            0,
-            "get",
-            "urlimage2",
-            "2cl de get",
-            "ajouter glacon"
-        ))
-        insertDrinkDetailedRoom(DrinkDetailsRoom(
-            0,
-            "vodka redbull",
-            "urlimage3",
-            "2cl de vodka",
-            "blabla"
-        ))
-
-
-        getAllDrinksDetailedRoom()*/
-
-
     }
 
     fun refreshFullDrinkList() {
-        val listeRoom = drinkDetailsRoomListLiveData.value?.toMutableList()
-        val listeRemote = remoteDrinksListLiveData.value?.toList()
+        val listFull = drinkDetailsRoomListLiveData.value?.toMutableList()
+        val listRemote = remoteDrinksListLiveData.value?.toList()
 
-        if (listeRemote != null) {
-            listeRoom?.addAll(listeRemote)
-            _allDrinksLiveData.value = listeRoom
+        if (listRemote != null) {
+            listFull?.addAll(listRemote)
+            listFull?.sortBy { it.strDrink }
+            _allDrinksLiveData.value = listFull
         }
     }
 
@@ -132,6 +93,7 @@ class MainViewModel @Inject constructor(
                     strDrinkThumb = drinkDetailed.strDrinkThumb,
                     isMine = drinkDetailed.isMine)
             }
+            refreshFullDrinkList()
         }
     }
 

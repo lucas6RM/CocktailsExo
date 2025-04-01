@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
 
 data class ResponseDrinkDetailsDto(
     @Json(name = "drinks")
-    val drinksDetailsDto: List<DrinkDetailsDto>
+    val drinksDetailsDto: List<DrinkDetailsDto?>
 )
 
 data class ResponseAllDrinksLite(
