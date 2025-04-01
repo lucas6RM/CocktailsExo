@@ -17,9 +17,5 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        supportFragmentManager.commit {
-            replace(R.id.main, MainFragment())
-            addToBackStack(null)
-        }
     }
 }

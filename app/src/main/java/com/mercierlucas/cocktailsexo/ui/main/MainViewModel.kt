@@ -1,12 +1,13 @@
 package com.mercierlucas.cocktailsexo.ui.main
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercierlucas.cocktailsexo.MyApp
 import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsRoom
-import com.mercierlucas.cocktailsexo.data.local.model.DrinkLiteEntity
+import com.mercierlucas.cocktailsexo.data.local.model.DrinkLiteModel
 import com.mercierlucas.cocktailsexo.data.network.api.ApiService
 import com.mercierlucas.cocktailsexo.data.network.dtos.DrinkLiteDto
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,36 +21,26 @@ class MainViewModel @Inject constructor(
     private val apiService: ApiService
 ): ViewModel() {
 
-    private val _drinkDetailsRoomListLiveData = MutableLiveData<List<DrinkDetailsRoom>>(emptyList())
-    val drinkDetailsRoomListLiveData : MutableLiveData<List<DrinkDetailsRoom>> = _drinkDetailsRoomListLiveData
+    private val _drinkDetailsRoomListLiveData = MutableLiveData<List<DrinkLiteModel>>(emptyList())
+    val drinkDetailsRoomListLiveData : MutableLiveData<List<DrinkLiteModel>> = _drinkDetailsRoomListLiveData
 
-    private val _drinkLiteEntityListLiveData = MutableLiveData<List<DrinkLiteEntity>>(emptyList())
-    val drinkLiteEntityListLiveData : MutableLiveData<List<DrinkLiteEntity>> = _drinkLiteEntityListLiveData
+    private val _drinkLiteModelListLiveData = MutableLiveData<List<DrinkLiteModel>>(emptyList())
+    val drinkLiteModelListLiveData : MutableLiveData<List<DrinkLiteModel>> = _drinkLiteModelListLiveData
 
 
-    private val _remoteDrinksListLiveData = MutableLiveData<List<DrinkLiteDto>?>(emptyList())
-    val remoteDrinksListLiveData: MutableLiveData<List<DrinkLiteDto>?> = _remoteDrinksListLiveData
+    private val _remoteDrinksListLiveData = MutableLiveData<List<DrinkLiteModel>?>(emptyList())
+    val remoteDrinksListLiveData: MutableLiveData<List<DrinkLiteModel>?> = _remoteDrinksListLiveData
+
+    private val _messageFromGetAllDrinksResponse = MutableLiveData<String?>()
+    val messageFromGetAllDrinksResponse : LiveData<String?>
+        get() = _messageFromGetAllDrinksResponse
+
 
     init {
 
         getAllDrinksDetailedRoom()
-        val listeRoom = drinkDetailsRoomListLiveData.value?.map { drinkDetailed ->
-            DrinkLiteEntity(
-                idDrink = drinkDetailed.idDrink.toString(),
-                strDrink = drinkDetailed.strDrink,
-                strDrinkThumb = drinkDetailed.strDrinkThumb,
-                isMine = drinkDetailed.isMine)
-        }
 
-
-        Log.i("Lucas_entity", listeRoom.toString())
-
-
-
-
-
-
-/*
+        /*
         deletedByIdDrinkDetailedRoom(4)
 
         deletedByIdDrinkDetailedRoom(5)
@@ -88,10 +79,6 @@ class MainViewModel @Inject constructor(
 
         getAllDrinksDetailedRoom()*/
 
-
-
-
-
     }
 
 
@@ -104,7 +91,13 @@ class MainViewModel @Inject constructor(
             response?.let {
                 if (response.isSuccessful) {
                     val result = response.body()
-                    _remoteDrinksListLiveData.value = result?.drinksLiteDto
+                    _remoteDrinksListLiveData.value = result?.drinksLiteDto?.map { drinkRemote ->
+                        DrinkLiteModel(
+                            idDrink = drinkRemote.idDrink,
+                            strDrink = drinkRemote.strDrink,
+                            strDrinkThumb = drinkRemote.strDrinkThumb,
+                            isMine = drinkRemote.isMine)
+                    }
 
                     Log.i("MAIN VM", "MAIN VM Liste Drinks Lite : " + result)
                 } else when (response.code()) {
@@ -132,12 +125,17 @@ class MainViewModel @Inject constructor(
 
     fun getAllDrinksDetailedRoom(){
         viewModelScope.launch {
-            _drinkDetailsRoomListLiveData.value = emptyList<DrinkDetailsRoom>()
 
             val drinkList = withContext(Dispatchers.IO) {
                 MyApp.db.drinkDetailsDao().getAll()
             }
-            _drinkDetailsRoomListLiveData.value = drinkList.toList()
+            _drinkDetailsRoomListLiveData.value = drinkList.map { drinkDetailed ->
+                DrinkLiteModel(
+                    idDrink = drinkDetailed.idDrink.toString(),
+                    strDrink = drinkDetailed.strDrink,
+                    strDrinkThumb = drinkDetailed.strDrinkThumb,
+                    isMine = drinkDetailed.isMine)
+            }
 
             Log.i("LUCAS", drinkList.toString())
         }
@@ -165,5 +163,21 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    fun clickOnDrinkIsDone(idDrink: Long, isMine: Boolean) {
+        if (isMine)
+            goToDetailsRoom(idDrink)
+        else
+            goToDetailsRemote(idDrink)
+    }
+
+    private fun goToDetailsRemote(idDrink: Long) {
+
+    }
+
+    private fun goToDetailsRoom(idDrink: Long) {
+
+    }
+
 
 }

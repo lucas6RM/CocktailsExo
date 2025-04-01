@@ -1,6 +1,5 @@
 package com.mercierlucas.cocktailsexo.data.network.dtos
 
-import com.mercierlucas.cocktailsexo.data.local.model.DrinkLiteEntity
 import com.squareup.moshi.Json
 
 
