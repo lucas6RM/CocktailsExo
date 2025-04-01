@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mercierlucas.cocktailsexo.R
 import com.mercierlucas.cocktailsexo.data.local.model.DrinkLiteModel
 import com.mercierlucas.cocktailsexo.databinding.ItemViewCocktailBinding
+import com.squareup.picasso.Picasso
 
 
-
-class DrinkAdapter(val onDrinkClicked : (Long, Boolean) -> Unit) : ListAdapter<DrinkLiteModel, DrinkViewHolder>(DrinkDiffCallback){
+class DrinkAdapter(val onDrinkClicked : (String, Boolean) -> Unit) : ListAdapter<DrinkLiteModel, DrinkViewHolder>(DrinkDiffCallback){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrinkViewHolder {
 
         val itemView = LayoutInflater.from(parent.context)
@@ -26,12 +26,25 @@ class DrinkAdapter(val onDrinkClicked : (Long, Boolean) -> Unit) : ListAdapter<D
 
     @SuppressLint("UseCompatLoadingForDrawables", "PrivateResource")
     override fun onBindViewHolder(holder: DrinkViewHolder, position: Int) {
-        val article = getItem(position)
+        val drink = getItem(position)
 
 
 
         holder.binding.apply {
+            ivItemView.let {
+                Picasso.get()
+                    .load(drink.strDrinkThumb.ifEmpty { "boo" })
+                    .placeholder(R.drawable.img)
+                    .error(R.drawable.img)
+                    .into(this.ivItemView)
+            }
 
+            tvItemViewCocktailTitle.text = drink.strDrink
+
+
+            clItemView.setOnClickListener {
+                onDrinkClicked.invoke(drink.idDrink,drink.isMine)
+            }
 
         }
     }

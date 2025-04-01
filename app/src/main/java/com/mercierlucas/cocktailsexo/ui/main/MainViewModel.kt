@@ -1,5 +1,6 @@
 package com.mercierlucas.cocktailsexo.ui.main
 
+import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,7 +10,6 @@ import com.mercierlucas.cocktailsexo.MyApp
 import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsRoom
 import com.mercierlucas.cocktailsexo.data.local.model.DrinkLiteModel
 import com.mercierlucas.cocktailsexo.data.network.api.ApiService
-import com.mercierlucas.cocktailsexo.data.network.dtos.DrinkLiteDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,21 +24,21 @@ class MainViewModel @Inject constructor(
     private val _drinkDetailsRoomListLiveData = MutableLiveData<List<DrinkLiteModel>>(emptyList())
     val drinkDetailsRoomListLiveData : MutableLiveData<List<DrinkLiteModel>> = _drinkDetailsRoomListLiveData
 
-    private val _drinkLiteModelListLiveData = MutableLiveData<List<DrinkLiteModel>>(emptyList())
-    val drinkLiteModelListLiveData : MutableLiveData<List<DrinkLiteModel>> = _drinkLiteModelListLiveData
-
+    private val _allDrinksLiveData = MutableLiveData<List<DrinkLiteModel>?>(emptyList())
+    val allDrinksLiveData : MutableLiveData<List<DrinkLiteModel>?> = _allDrinksLiveData
 
     private val _remoteDrinksListLiveData = MutableLiveData<List<DrinkLiteModel>?>(emptyList())
     val remoteDrinksListLiveData: MutableLiveData<List<DrinkLiteModel>?> = _remoteDrinksListLiveData
 
-    private val _messageFromGetAllDrinksResponse = MutableLiveData<String?>()
-    val messageFromGetAllDrinksResponse : LiveData<String?>
+    private val _messageFromGetAllDrinksResponse = MutableLiveData<Int?>()
+    val messageFromGetAllDrinksResponse : LiveData<Int?>
         get() = _messageFromGetAllDrinksResponse
 
 
     init {
 
         getAllDrinksDetailedRoom()
+        getRemoteDrinks()
 
         /*
         deletedByIdDrinkDetailedRoom(4)
@@ -79,46 +79,42 @@ class MainViewModel @Inject constructor(
 
         getAllDrinksDetailedRoom()*/
 
+
     }
 
+    fun refreshFullDrinkList() {
+        val listeRoom = drinkDetailsRoomListLiveData.value?.toMutableList()
+        val listeRemote = remoteDrinksListLiveData.value?.toList()
+
+        if (listeRemote != null) {
+            listeRoom?.addAll(listeRemote)
+            _allDrinksLiveData.value = listeRoom
+        }
+    }
 
 
     fun getRemoteDrinks() {
         viewModelScope.launch {
-            val response = withContext(Dispatchers.IO) {
+            val responseGetAllCocktails = withContext(Dispatchers.IO) {
                 apiService.getAllCocktails()
             }
-            response?.let {
-                if (response.isSuccessful) {
-                    val result = response.body()
-                    _remoteDrinksListLiveData.value = result?.drinksLiteDto?.map { drinkRemote ->
+            val body = responseGetAllCocktails?.body()
+            when{
+                responseGetAllCocktails == null ->
+                    Log.e(ContentValues.TAG,"Pas de reponse du serveur")
+                responseGetAllCocktails.isSuccessful && body != null -> {
+                    _remoteDrinksListLiveData.value = body.drinksLiteDto.map { drinkRemote ->
                         DrinkLiteModel(
                             idDrink = drinkRemote.idDrink,
                             strDrink = drinkRemote.strDrink,
                             strDrinkThumb = drinkRemote.strDrinkThumb,
                             isMine = drinkRemote.isMine)
                     }
-
-                    Log.i("MAIN VM", "MAIN VM Liste Drinks Lite : " + result)
-                } else when (response.code()) {
-                    403 -> {
-                        Log.i("MAIN VM", "Erreur 403")
-                    }
-
-                    404 -> {
-                        Log.i("MAIN VM", "Erreur 404")
-                    }
-
-                    500 -> {
-                        Log.i("MAIN VM", "Erreur 500")
-                    }
-
-                    else -> {
-                        Log.i("MAIN VM", "Erreur inconnue")
-                    }
+                    _messageFromGetAllDrinksResponse.value = responseGetAllCocktails.code()
+                    refreshFullDrinkList()
                 }
+                else -> responseGetAllCocktails.errorBody()?.let { Log.e(ContentValues.TAG, it.string()) }
             }
-
         }
     }
 
@@ -164,18 +160,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun clickOnDrinkIsDone(idDrink: Long, isMine: Boolean) {
+    fun clickOnDrinkIsDone(idDrink: String, isMine: Boolean) {
         if (isMine)
             goToDetailsRoom(idDrink)
         else
             goToDetailsRemote(idDrink)
     }
 
-    private fun goToDetailsRemote(idDrink: Long) {
+    private fun goToDetailsRemote(idDrink: String) {
 
     }
 
-    private fun goToDetailsRoom(idDrink: Long) {
+    private fun goToDetailsRoom(idDrink: String) {
 
     }
 

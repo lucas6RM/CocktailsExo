@@ -13,7 +13,6 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mercierlucas.cocktailsexo.R
-import com.mercierlucas.cocktailsexo.data.local.model.DrinkLiteModel
 import com.mercierlucas.cocktailsexo.databinding.FragmentMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,6 +55,7 @@ class MainFragment : Fragment() {
             }
 
             btnNewCocktail.setOnClickListener {
+                mainViewModel.refreshFullDrinkList()
                 // nav to Create
             }
         }
@@ -63,44 +63,21 @@ class MainFragment : Fragment() {
 
         mainViewModel.apply {
             messageFromGetAllDrinksResponse.observe(viewLifecycleOwner){
-               /* when(it){
-                    "ok"           -> Log.i(ContentValues.TAG, getString(R.string.response_ok))
-                    "unauthorized" -> Log.i(ContentValues.TAG, getString(R.string.unauthorized))
-                    "error_param"  -> Log.i(ContentValues.TAG, getString(R.string.error_param))
-                    else           -> Log.i(ContentValues.TAG, getString(R.string.error_connection_db))
+                when(it){
+                    200    -> Log.i(ContentValues.TAG, getString(R.string.response_ok))
+                    403    -> Log.i(ContentValues.TAG, getString(R.string.error_param))
+                    404    -> Log.i(ContentValues.TAG, getString(R.string.unauthorized))
+                    500    -> Log.i(ContentValues.TAG, getString(R.string.server_error))
+                    else   -> Log.i(ContentValues.TAG, getString(R.string.error_connection_db))
                 }
-                */
-
             }
 
 
-        }
-
-        mainViewModel.drinkDetailsRoomListLiveData.observe(viewLifecycleOwner){
-            Log.i("lucas_detailed", it.toString())
-
-            val listeRoom = it.map { drinkDetailed ->
-                DrinkLiteModel(
-                    idDrink = drinkDetailed.idDrink.toString(),
-                    strDrink = drinkDetailed.strDrink,
-                    strDrinkThumb = drinkDetailed.strDrinkThumb,
-                    isMine = drinkDetailed.isMine)
+            allDrinksLiveData.observe(viewLifecycleOwner){
+                drinkAdapter.submitList(it){
+                    binding.rvDrinks.scrollToPosition(0)
+                }
             }
-            Log.i("lucas_entity", listeRoom.toString())
-
         }
-
-        mainViewModel.drinkLiteEntityListLiveData.observe(viewLifecycleOwner){
-            Log.i("lucas_entity", it.toString())
-
-
-        }
-
     }
-
-
-
-
-
-
 }

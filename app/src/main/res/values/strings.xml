@@ -3,4 +3,9 @@
     <string name="title">title</string>
     <string name="cocktails_book">Cocktails Book</string>
     <string name="nouveau_cocktail">Nouveau cocktail</string>
+    <string name="response_ok">Reponse ok</string>
+    <string name="error_param">Erreur de paramètres</string>
+    <string name="unauthorized">Unauthorized</string>
+    <string name="server_error">Server error</string>
+    <string name="error_connection_db">Error Connection</string>
 </resources>
