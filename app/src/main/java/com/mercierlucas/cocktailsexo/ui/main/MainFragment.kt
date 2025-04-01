@@ -28,7 +28,6 @@ class MainFragment : Fragment() {
     private lateinit var navController: NavController
     private lateinit var navDir: NavDirections
 
-
     private lateinit var drinkAdapter : DrinkAdapter
 
     override fun onCreateView(
@@ -46,6 +45,9 @@ class MainFragment : Fragment() {
 
         drinkAdapter = DrinkAdapter(onDrinkClicked = { idDrink,isMine ->
             mainViewModel.clickOnDrinkIsDone(idDrink,isMine)
+            navDir = MainFragmentDirections
+                .actionMainFragmentToDetailsDrinkFragment(idDrink,isMine)
+            navController.navigate(navDir)
         })
 
         with(binding){
@@ -56,7 +58,7 @@ class MainFragment : Fragment() {
 
             btnNewCocktail.setOnClickListener {
                 mainViewModel.refreshFullDrinkList()
-                // nav to Create
+                navController.navigate(R.id.action_mainFragment_to_createDrinkFragment)
             }
         }
 
@@ -79,5 +81,18 @@ class MainFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        with(mainViewModel){
+            getAllDrinksDetailedRoom()
+            getRemoteDrinks()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

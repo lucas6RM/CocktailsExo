@@ -132,33 +132,10 @@ class MainViewModel @Inject constructor(
                     strDrinkThumb = drinkDetailed.strDrinkThumb,
                     isMine = drinkDetailed.isMine)
             }
-
-            Log.i("LUCAS", drinkList.toString())
         }
     }
 
 
-
-
-    fun insertDrinkDetailedRoom(drinkDetailedRoom : DrinkDetailsRoom){
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                MyApp.db.drinkDetailsDao().insert(drinkDetailedRoom)
-                Log.i("LUCAS", "insert details")
-            }
-        }
-    }
-
-
-
-    fun deletedByIdDrinkDetailedRoom(id: Long){
-        viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                MyApp.db.drinkDetailsDao().deleteById(idDrink = id)
-                Log.i("LUCAS", "supprimé ${id}" )
-            }
-        }
-    }
 
     fun clickOnDrinkIsDone(idDrink: String, isMine: Boolean) {
         if (isMine)

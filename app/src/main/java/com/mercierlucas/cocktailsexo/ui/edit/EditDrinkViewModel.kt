@@ -1,0 +1,66 @@
+package com.mercierlucas.cocktailsexo.ui.edit
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.mercierlucas.cocktailsexo.MyApp
+import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsRoom
+import com.mercierlucas.cocktailsexo.data.local.model.DrinkDetailsModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+class EditDrinkViewModel : ViewModel() {
+
+    private val _drinkDetailsLiveData = MutableLiveData<DrinkDetailsModel?>()
+    val drinkDetailsLiveData : MutableLiveData<DrinkDetailsModel?> = _drinkDetailsLiveData
+
+    private val _isDrinkUpdated = MutableLiveData(false)
+    val isDrinkUpdated: LiveData<Boolean>
+        get() = _isDrinkUpdated
+
+    private val _isDrinkDeleted = MutableLiveData(false)
+    val isDrinkDeleted: LiveData<Boolean>
+        get() = _isDrinkDeleted
+
+    init {
+        _isDrinkUpdated.value = false
+        _isDrinkDeleted.value = false
+    }
+
+
+    fun getDrinkRoomById(idDrink: Long){
+        viewModelScope.launch {
+
+            val drinkRoom = withContext(Dispatchers.IO) {
+                MyApp.db.drinkDetailsDao().findByIdDrink(idDrink)
+            }
+            _drinkDetailsLiveData.value = DrinkDetailsModel(
+                strDrink = drinkRoom.strDrink,
+                strDrinkThumb = drinkRoom.strDrinkThumb,
+                strIngredients = drinkRoom.strIngredients,
+                strInstructions = drinkRoom.strInstructions
+            )
+        }
+    }
+
+    fun updateDrinkRoom(drinkDetailsRoom: DrinkDetailsRoom){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                MyApp.db.drinkDetailsDao().update(drinkDetailsRoom)
+            }
+            _isDrinkUpdated.value = true
+        }
+    }
+
+    fun deletedByIdDrinkDetailedRoom(id: Long){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                MyApp.db.drinkDetailsDao().deleteById(idDrink = id)
+            }
+            _isDrinkDeleted.value = true
+        }
+    }
+}

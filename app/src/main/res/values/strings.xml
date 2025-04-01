@@ -2,10 +2,19 @@
     <string name="app_name">CocktailsExo</string>
     <string name="title">title</string>
     <string name="cocktails_book">Cocktails Book</string>
-    <string name="nouveau_cocktail">Nouveau cocktail</string>
     <string name="response_ok">Reponse ok</string>
-    <string name="error_param">Erreur de paramètres</string>
+    <string name="error_param">Error parameters</string>
     <string name="unauthorized">Unauthorized</string>
     <string name="server_error">Server error</string>
     <string name="error_connection_db">Error Connection</string>
+    <string name="new_cocktail">New Cocktail</string>
+    <string name="url_image_cocktail">URL image Cocktail</string>
+    <string name="name">Name</string>
+    <string name="edit_cocktail">Cocktail detailed</string>
+    <string name="modify">Modify</string>
+    <string name="delete">Delete</string>
+    <string name="create">Create</string>
+    <string name="instructions_list">Instructions list</string>
+    <string name="edit">Edit</string>
+    <string name="empty_required_fields">Some required fields are empty</string>
 </resources>

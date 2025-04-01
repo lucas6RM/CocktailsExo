@@ -9,5 +9,43 @@
         android:id="@+id/mainFragment"
         android:name="com.mercierlucas.cocktailsexo.ui.main.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_createDrinkFragment"
+            app:destination="@id/createDrinkFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_detailsDrinkFragment"
+            app:destination="@id/detailsDrinkFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createDrinkFragment"
+        android:name="com.mercierlucas.cocktailsexo.ui.create.CreateDrinkFragment"
+        android:label="fragment_create_drink"
+        tools:layout="@layout/fragment_create_drink" />
+    <fragment
+        android:id="@+id/detailsDrinkFragment"
+        android:name="com.mercierlucas.cocktailsexo.ui.details.DetailsDrinkFragment"
+        android:label="fragment_details_drink"
+        tools:layout="@layout/fragment_details_drink" >
+        <action
+            android:id="@+id/action_detailsDrinkFragment_to_editDrinkFragment"
+            app:destination="@id/editDrinkFragment"
+            app:popUpTo="@id/mainFragment"
+            app:popUpToInclusive="false" />
+        <argument
+            android:name="idDrink"
+            app:argType="string" />
+        <argument
+            android:name="isMine"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/editDrinkFragment"
+        android:name="com.mercierlucas.cocktailsexo.ui.edit.EditDrinkFragment"
+        android:label="fragment_edit_drink"
+        tools:layout="@layout/fragment_edit_drink" >
+        <argument
+            android:name="idDrink"
+            app:argType="long" />
+    </fragment>
 </navigation>

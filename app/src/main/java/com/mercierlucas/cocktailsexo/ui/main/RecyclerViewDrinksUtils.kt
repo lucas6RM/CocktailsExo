@@ -28,8 +28,6 @@ class DrinkAdapter(val onDrinkClicked : (String, Boolean) -> Unit) : ListAdapter
     override fun onBindViewHolder(holder: DrinkViewHolder, position: Int) {
         val drink = getItem(position)
 
-
-
         holder.binding.apply {
             ivItemView.let {
                 Picasso.get()
@@ -40,7 +38,6 @@ class DrinkAdapter(val onDrinkClicked : (String, Boolean) -> Unit) : ListAdapter
             }
 
             tvItemViewCocktailTitle.text = drink.strDrink
-
 
             clItemView.setOnClickListener {
                 onDrinkClicked.invoke(drink.idDrink,drink.isMine)
