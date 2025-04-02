@@ -1,5 +1,9 @@
 package com.mercierlucas.cocktailsexo.di
 
+import android.content.Context
+import androidx.room.Room
+import com.mercierlucas.cocktailsexo.AppDatabase
+import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsDao
 import com.mercierlucas.cocktailsexo.data.network.api.ApiRoutes
 import com.mercierlucas.cocktailsexo.data.network.api.ApiService
 import com.squareup.moshi.Moshi
@@ -7,6 +11,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -60,6 +65,22 @@ object AppModule {
     @Provides
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideAppDatabase(@ApplicationContext appContext: Context) : AppDatabase {
+        return Room.databaseBuilder(appContext, AppDatabase::class.java, "final")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideDrinkDetailsDao(appDatabase: AppDatabase): DrinkDetailsDao {
+        return appDatabase.drinkDetailsDao()
     }
 
 }

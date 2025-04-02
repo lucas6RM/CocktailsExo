@@ -112,6 +112,7 @@ data class DrinkDetailsDto(
 ){
     val ingredients :String
         get() {
+
             val pairs = listOf(
                 strIngredient1 to strMeasure1,
                 strIngredient2 to strMeasure2,
@@ -136,19 +137,19 @@ data class DrinkDetailsDto(
                     strConcat += "$ingredient (${measure ?: ""})\n"
                 }
             }
-
             return strConcat
+
 
             /*----- Reflection -----
 
             var strConcat = ""
 
             for (i in 1..15){
-                val ingredient = this::class.members
+                val ingredient = this::class.memberProperties
                     .firstOrNull { it.name == "strIngredient$i" }
                     ?.call(this) as? String
 
-                val measure = this::class.members
+                val measure = this::class.memberProperties
                     .firstOrNull { it.name == "strMeasure$i" }
                     ?.call(this) as? String
 
@@ -158,8 +159,7 @@ data class DrinkDetailsDto(
             }
 
             return strConcat
-
-             */
+*/
 
             /* ------ brute force ------
             var strConcat = ""

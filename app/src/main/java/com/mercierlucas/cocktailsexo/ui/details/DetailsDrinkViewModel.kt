@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercierlucas.cocktailsexo.MyApp
+import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsDao
 import com.mercierlucas.cocktailsexo.data.local.model.DrinkDetailsModel
 import com.mercierlucas.cocktailsexo.data.local.model.DrinkLiteModel
 import com.mercierlucas.cocktailsexo.data.network.api.ApiService
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailsDrinkViewModel @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val drinkDetailsDao: DrinkDetailsDao
 ) : ViewModel() {
 
     private val _drinkDetailsLiveData = MutableLiveData<DrinkDetailsModel?>()
@@ -56,9 +58,13 @@ class DetailsDrinkViewModel @Inject constructor(
                 responseGetCocktail == null ->
                     Log.e(TAG,"Pas de reponse du serveur")
                 responseGetCocktail.isSuccessful && body != null -> {
-                    body.drinksDetailsDto[0]?.let {
-                        formatResponseFromGetRemoteCocktailToLiveData(
-                            it
+
+                    body.drinksDetailsDto[0]?.let {drinkDetailsDto ->
+                        _drinkDetailsLiveData.value = DrinkDetailsModel(
+                            strDrink = drinkDetailsDto.strDrink ?: "",
+                            strDrinkThumb = drinkDetailsDto.strDrinkThumb ?: "",
+                            strIngredients = drinkDetailsDto.ingredients,
+                            strInstructions = drinkDetailsDto.strInstructions ?: ""
                         )
                     }
                     _messageFromGetDrinkResponse.value = responseGetCocktail.code()
@@ -69,17 +75,6 @@ class DetailsDrinkViewModel @Inject constructor(
         }
     }
 
-    private fun formatResponseFromGetRemoteCocktailToLiveData(drinkDetailsDto: DrinkDetailsDto) {
-        _drinkDetailsLiveData.value = DrinkDetailsModel(
-            strDrink = drinkDetailsDto.strDrink ?: "",
-            strDrinkThumb = drinkDetailsDto.strDrinkThumb ?: "",
-            strIngredients = drinkDetailsDto.ingredients,
-            strInstructions = drinkDetailsDto.strInstructions ?: ""
-        )
-
-
-
-    }
 
 
 }

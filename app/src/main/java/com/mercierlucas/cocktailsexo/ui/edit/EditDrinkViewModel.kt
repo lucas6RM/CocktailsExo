@@ -6,13 +6,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercierlucas.cocktailsexo.MyApp
+import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsDao
 import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsRoom
 import com.mercierlucas.cocktailsexo.data.local.model.DrinkDetailsModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class EditDrinkViewModel : ViewModel() {
+@HiltViewModel
+class EditDrinkViewModel @Inject constructor(
+    private val drinkDetailsDao: DrinkDetailsDao
+) : ViewModel() {
 
     private val _drinkDetailsLiveData = MutableLiveData<DrinkDetailsModel?>()
     val drinkDetailsLiveData : MutableLiveData<DrinkDetailsModel?> = _drinkDetailsLiveData
@@ -35,7 +41,7 @@ class EditDrinkViewModel : ViewModel() {
         viewModelScope.launch {
 
             val drinkRoom = withContext(Dispatchers.IO) {
-                MyApp.db.drinkDetailsDao().findByIdDrink(idDrink)
+                drinkDetailsDao.findByIdDrink(idDrink)
             }
             _drinkDetailsLiveData.value = DrinkDetailsModel(
                 strDrink = drinkRoom.strDrink,
@@ -49,7 +55,7 @@ class EditDrinkViewModel : ViewModel() {
     fun updateDrinkRoom(drinkDetailsRoom: DrinkDetailsRoom){
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                MyApp.db.drinkDetailsDao().update(drinkDetailsRoom)
+                drinkDetailsDao.update(drinkDetailsRoom)
             }
             _isDrinkUpdated.value = true
         }
@@ -58,7 +64,7 @@ class EditDrinkViewModel : ViewModel() {
     fun deletedByIdDrinkDetailedRoom(id: Long){
         viewModelScope.launch {
             withContext(Dispatchers.IO){
-                MyApp.db.drinkDetailsDao().deleteById(idDrink = id)
+                drinkDetailsDao.deleteById(idDrink = id)
             }
             _isDrinkDeleted.value = true
         }

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercierlucas.cocktailsexo.MyApp
+import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsDao
 import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsRoom
 import com.mercierlucas.cocktailsexo.data.local.model.DrinkLiteModel
 import com.mercierlucas.cocktailsexo.data.network.api.ApiService
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val drinkDetailsDao: DrinkDetailsDao
 ): ViewModel() {
 
     private val _drinkDetailsRoomListLiveData = MutableLiveData<List<DrinkLiteModel>>(emptyList())
@@ -36,10 +38,8 @@ class MainViewModel @Inject constructor(
 
 
     init {
-
         getAllDrinksDetailedRoom()
         getRemoteDrinks()
-
     }
 
     fun refreshFullDrinkList() {
@@ -84,7 +84,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
 
             val drinkList = withContext(Dispatchers.IO) {
-                MyApp.db.drinkDetailsDao().getAll()
+                drinkDetailsDao.getAll()
             }
             _drinkDetailsRoomListLiveData.value = drinkList.map { drinkDetailed ->
                 DrinkLiteModel(
