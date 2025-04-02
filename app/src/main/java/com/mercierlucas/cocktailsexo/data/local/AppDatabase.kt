@@ -1,5 +1,5 @@
 
-package com.mercierlucas.cocktailsexo
+package com.mercierlucas.cocktailsexo.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

@@ -2,7 +2,7 @@ package com.mercierlucas.cocktailsexo.di
 
 import android.content.Context
 import androidx.room.Room
-import com.mercierlucas.cocktailsexo.AppDatabase
+import com.mercierlucas.cocktailsexo.data.local.AppDatabase
 import com.mercierlucas.cocktailsexo.data.local.daos.DrinkDetailsDao
 import com.mercierlucas.cocktailsexo.data.network.api.ApiRoutes
 import com.mercierlucas.cocktailsexo.data.network.api.ApiService

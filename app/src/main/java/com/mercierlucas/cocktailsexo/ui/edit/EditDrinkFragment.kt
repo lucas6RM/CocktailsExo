@@ -74,19 +74,24 @@ class EditDrinkFragment : Fragment() {
                     etFragmentEditInstructions.setText(instructions)
                 }
             }
-        }
 
-        editViewModel.isDrinkUpdated.observe(viewLifecycleOwner){
-            if (it){
-                navController.popBackStack()
+            messageFromRoom.observe(viewLifecycleOwner){
+                context?.showToast(it)
+            }
+
+            isDrinkUpdated.observe(viewLifecycleOwner){
+                if (it){
+                    navController.popBackStack()
+                }
+            }
+
+            isDrinkDeleted.observe(viewLifecycleOwner){
+                if (it){
+                    navController.popBackStack()
+                }
             }
         }
 
-        editViewModel.isDrinkDeleted.observe(viewLifecycleOwner){
-            if (it){
-                navController.popBackStack()
-            }
-        }
 
         with(binding){
             btnEditCocktail.setOnClickListener {

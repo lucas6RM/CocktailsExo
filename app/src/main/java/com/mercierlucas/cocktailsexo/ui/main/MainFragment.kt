@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mercierlucas.cocktailsexo.R
 import com.mercierlucas.cocktailsexo.databinding.FragmentMainBinding
+import com.mercierlucas.feedarticles.Utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -67,10 +68,11 @@ class MainFragment : Fragment() {
             messageFromGetAllDrinksResponse.observe(viewLifecycleOwner){
                 when(it){
                     200    -> Log.i(ContentValues.TAG, getString(R.string.response_ok))
-                    403    -> Log.i(ContentValues.TAG, getString(R.string.error_param))
-                    404    -> Log.i(ContentValues.TAG, getString(R.string.unauthorized))
-                    500    -> Log.i(ContentValues.TAG, getString(R.string.server_error))
-                    else   -> Log.i(ContentValues.TAG, getString(R.string.error_connection_db))
+                    403    -> context?.showToast(getString(R.string.error_param))
+                    404    -> context?.showToast(getString(R.string.unauthorized))
+                    500    -> context?.showToast(getString(R.string.server_error))
+                    505    -> context?.showToast(getString(R.string.no_response_from_server))
+                    else   -> context?.showToast(getString(R.string.unknown_error))
                 }
             }
 
@@ -87,7 +89,7 @@ class MainFragment : Fragment() {
         super.onResume()
         with(mainViewModel){
             getAllDrinksDetailedRoom()
-            getRemoteDrinks()
+            //getRemoteDrinks()
         }
     }
 

@@ -23,6 +23,10 @@ class CreateDrinkViewModel @Inject constructor(
     val isNewDrinkCreated: LiveData<Boolean>
         get() = _isNewDrinkCreated
 
+    private val _messageFromRoom = MutableLiveData<String>()
+    val messageFromRoom : LiveData<String>
+        get() = _messageFromRoom
+
     init {
         _isNewDrinkCreated.value = false
     }
@@ -33,6 +37,7 @@ class CreateDrinkViewModel @Inject constructor(
                 drinkDetailsDao.insert(drinkDetailedRoom)
             }
             _isNewDrinkCreated.value = true
+            _messageFromRoom.value = "Personal cocktail created"
         }
     }
 

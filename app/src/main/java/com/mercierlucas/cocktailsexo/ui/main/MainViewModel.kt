@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.ConnectException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,25 +57,29 @@ class MainViewModel @Inject constructor(
 
     fun getRemoteDrinks() {
         viewModelScope.launch {
-            val responseGetAllCocktails = withContext(Dispatchers.IO) {
-                apiService.getAllCocktails()
-            }
-            val body = responseGetAllCocktails?.body()
-            when{
-                responseGetAllCocktails == null ->
-                    Log.e(ContentValues.TAG,"Pas de reponse du serveur")
-                responseGetAllCocktails.isSuccessful && body != null -> {
-                    _remoteDrinksListLiveData.value = body.drinksLiteDto.map { drinkRemote ->
-                        DrinkLiteModel(
-                            idDrink = drinkRemote.idDrink,
-                            strDrink = drinkRemote.strDrink,
-                            strDrinkThumb = drinkRemote.strDrinkThumb,
-                            isMine = drinkRemote.isMine)
-                    }
-                    _messageFromGetAllDrinksResponse.value = responseGetAllCocktails.code()
-                    refreshFullDrinkList()
+            try{
+                val responseGetAllCocktails = withContext(Dispatchers.IO) {
+                    apiService.getAllCocktails()
                 }
-                else -> responseGetAllCocktails.errorBody()?.let { Log.e(ContentValues.TAG, it.string()) }
+                val body = responseGetAllCocktails?.body()
+                when{
+                    responseGetAllCocktails == null ->
+                        Log.e(ContentValues.TAG,"Pas de reponse du serveur")
+                    responseGetAllCocktails.isSuccessful && body != null -> {
+                        _remoteDrinksListLiveData.value = body.drinksLiteDto.map { drinkRemote ->
+                            DrinkLiteModel(
+                                idDrink = drinkRemote.idDrink,
+                                strDrink = drinkRemote.strDrink,
+                                strDrinkThumb = drinkRemote.strDrinkThumb,
+                                isMine = drinkRemote.isMine)
+                        }
+                        _messageFromGetAllDrinksResponse.value = responseGetAllCocktails.code()
+                        refreshFullDrinkList()
+                    }
+                    else -> responseGetAllCocktails.errorBody()?.let { Log.e(ContentValues.TAG, it.string()) }
+                }
+            } catch (error : ConnectException){
+                _messageFromGetAllDrinksResponse.value = 505
             }
         }
     }

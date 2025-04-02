@@ -1,7 +1,9 @@
 package com.mercierlucas.cocktailsexo.ui.details
 
+import android.content.ContentValues
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.mercierlucas.cocktailsexo.R
 import com.mercierlucas.cocktailsexo.databinding.FragmentDetailsDrinkBinding
+import com.mercierlucas.feedarticles.Utils.showToast
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,26 +52,40 @@ class DetailsDrinkFragment : Fragment() {
         val idDrink = args.idDrink
         val isMine = args.isMine
 
-        detailsDrinkViewModel.drinkDetailsLiveData.observe(viewLifecycleOwner){ drink ->
-            drink?.let {
-                cocktailName = it.strDrink
-                imageUrl = it.strDrinkThumb
-                ingredients = it.strIngredients
-                instructions = it.strInstructions
+        detailsDrinkViewModel.apply {
+
+            messageFromGetDrinkResponse.observe(viewLifecycleOwner){
+                when(it){
+                    200    -> Log.i(ContentValues.TAG, getString(R.string.response_ok))
+                    403    -> context?.showToast(getString(R.string.error_param))
+                    404    -> context?.showToast(getString(R.string.unauthorized))
+                    500    -> context?.showToast(getString(R.string.server_error))
+                    505    -> context?.showToast(getString(R.string.no_response_from_server))
+                    else   -> context?.showToast(getString(R.string.unknown_error))
+                }
             }
 
-            with(binding){
-                tvFragmentDetailsTitle.text = cocktailName
-                if(imageUrl.isNotEmpty())
-                    Picasso
-                        .get()
-                        .load(imageUrl)
-                        .placeholder(R.drawable.img)
-                        .error(R.drawable.img)
-                        .into(ivFragmentDetails)
+            drinkDetailsLiveData.observe(viewLifecycleOwner){ drink ->
+                drink?.let {
+                    cocktailName = it.strDrink
+                    imageUrl = it.strDrinkThumb
+                    ingredients = it.strIngredients
+                    instructions = it.strInstructions
+                }
 
-                tvIngredientsList.text = ingredients
-                tvInstructionsList.text = instructions
+                with(binding){
+                    tvFragmentDetailsTitle.text = cocktailName
+                    if(imageUrl.isNotEmpty())
+                        Picasso
+                            .get()
+                            .load(imageUrl)
+                            .placeholder(R.drawable.img)
+                            .error(R.drawable.img)
+                            .into(ivFragmentDetails)
+
+                    tvIngredientsList.text = ingredients
+                    tvInstructionsList.text = instructions
+                }
             }
         }
 

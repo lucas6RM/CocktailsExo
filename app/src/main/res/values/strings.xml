@@ -17,4 +17,6 @@
     <string name="instructions_list">Instructions list</string>
     <string name="edit">Edit</string>
     <string name="empty_required_fields">Some required fields are empty</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="no_response_from_server">No response from server</string>
 </resources>

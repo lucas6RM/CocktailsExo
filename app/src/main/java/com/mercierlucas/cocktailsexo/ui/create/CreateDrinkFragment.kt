@@ -49,11 +49,19 @@ class CreateDrinkFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
 
-        createDrinkViewModel.isNewDrinkCreated.observe(viewLifecycleOwner){
-            if (it){
-                navController.popBackStack()
+        createDrinkViewModel.apply {
+            isNewDrinkCreated.observe(viewLifecycleOwner){
+                if (it){
+                    navController.popBackStack()
+                }
             }
+
+            messageFromRoom.observe(viewLifecycleOwner){
+                context?.showToast(it)
+            }
+
         }
+
 
         with(binding){
             btnCreateCocktail.setOnClickListener {

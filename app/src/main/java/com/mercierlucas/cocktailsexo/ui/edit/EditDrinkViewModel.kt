@@ -31,6 +31,10 @@ class EditDrinkViewModel @Inject constructor(
     val isDrinkDeleted: LiveData<Boolean>
         get() = _isDrinkDeleted
 
+    private val _messageFromRoom = MutableLiveData<String>()
+    val messageFromRoom : LiveData<String>
+        get() = _messageFromRoom
+
     init {
         _isDrinkUpdated.value = false
         _isDrinkDeleted.value = false
@@ -58,6 +62,7 @@ class EditDrinkViewModel @Inject constructor(
                 drinkDetailsDao.update(drinkDetailsRoom)
             }
             _isDrinkUpdated.value = true
+            _messageFromRoom.value = "Personal cocktail updated"
         }
     }
 
@@ -67,6 +72,7 @@ class EditDrinkViewModel @Inject constructor(
                 drinkDetailsDao.deleteById(idDrink = id)
             }
             _isDrinkDeleted.value = true
+            _messageFromRoom.value = "Personal cocktail deleted"
         }
     }
 }

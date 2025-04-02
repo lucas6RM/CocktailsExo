@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.ConnectException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,11 +34,12 @@ class DetailsDrinkViewModel @Inject constructor(
         get() = _messageFromGetDrinkResponse
 
 
+
+
     fun getDrinkRoomById(idDrink: Long){
         viewModelScope.launch {
-
             val drinkRoom = withContext(Dispatchers.IO) {
-                MyApp.db.drinkDetailsDao().findByIdDrink(idDrink)
+                drinkDetailsDao.findByIdDrink(idDrink)
             }
             _drinkDetailsLiveData.value = DrinkDetailsModel(
                 strDrink = drinkRoom.strDrink,
@@ -50,27 +52,33 @@ class DetailsDrinkViewModel @Inject constructor(
 
     fun getDrinkRemoteById(idDrink: Long){
         viewModelScope.launch {
-            val responseGetCocktail = withContext(Dispatchers.IO) {
-                apiService.getCocktail(idDrink)
-            }
-            val body = responseGetCocktail?.body()
-            when{
-                responseGetCocktail == null ->
-                    Log.e(TAG,"Pas de reponse du serveur")
-                responseGetCocktail.isSuccessful && body != null -> {
-
-                    body.drinksDetailsDto[0]?.let {drinkDetailsDto ->
-                        _drinkDetailsLiveData.value = DrinkDetailsModel(
-                            strDrink = drinkDetailsDto.strDrink ?: "",
-                            strDrinkThumb = drinkDetailsDto.strDrinkThumb ?: "",
-                            strIngredients = drinkDetailsDto.ingredients,
-                            strInstructions = drinkDetailsDto.strInstructions ?: ""
-                        )
-                    }
-                    _messageFromGetDrinkResponse.value = responseGetCocktail.code()
-
+            try {
+                val responseGetCocktail = withContext(Dispatchers.IO) {
+                    apiService.getCocktail(idDrink)
                 }
-                else -> responseGetCocktail.errorBody()?.let { Log.e(TAG, it.string()) }
+                val body = responseGetCocktail?.body()
+                when {
+                    responseGetCocktail == null ->
+                        Log.e(TAG, "Pas de reponse du serveur")
+
+                    responseGetCocktail.isSuccessful && body != null -> {
+
+                        body.drinksDetailsDto[0]?.let { drinkDetailsDto ->
+                            _drinkDetailsLiveData.value = DrinkDetailsModel(
+                                strDrink = drinkDetailsDto.strDrink ?: "",
+                                strDrinkThumb = drinkDetailsDto.strDrinkThumb ?: "",
+                                strIngredients = drinkDetailsDto.ingredients,
+                                strInstructions = drinkDetailsDto.strInstructions ?: ""
+                            )
+                        }
+                        _messageFromGetDrinkResponse.value = responseGetCocktail.code()
+
+                    }
+
+                    else -> responseGetCocktail.errorBody()?.let { Log.e(TAG, it.string()) }
+                }
+            }catch (error : ConnectException){
+                _messageFromGetDrinkResponse.value = 505
             }
         }
     }
